@@ -1,30 +1,33 @@
 import React, { useState, useEffect } from 'react'
-import { makeTheFirstElementLast, makeTheLastElementFirst } from '../../helpers/utils';
+import { getTotalWidth } from '../../helpers/utils';
+import { carouselList } from './styles';
 
-export const CarouselList = ({ images, imagesWidth }) => {
+export const CarouselList = ({ images }) => {
     const [carouselImages, setCarouselImages] = useState([...images]);
+    const [counter, setCounter] = useState(0);
 
     useEffect(() => {
         setCarouselImages([...images]);
     }, [images]);
 
-    useEffect(() => {
-        document.addEventListener('scroll', () => {
-            if (imagesWidth > 0) {
-                if (window.scrollX + window.innerWidth >= imagesWidth / 2) {
-                    const newImages = makeTheFirstElementLast(carouselImages);
-                    setCarouselImages(newImages);
-                } else if (window.scrollX === 0) {
-                    const newImages = makeTheLastElementFirst(carouselImages);
-                    setCarouselImages(newImages);
-                }
+    const handleScroll = () => {
+        getTotalWidth(carouselImages).then((totalWidth) => {
+            if (window.scrollX >= totalWidth - window.innerWidth) {
+                setCarouselImages([...carouselImages, images[counter % images.length]])
+                setCounter(prev => prev + 1);
+            }
+            if (counter / images.length > Math.ceil(images.length / 2)) {
+                setCounter(0);
+                setCarouselImages([...images]);
             }
         });
-    }, [carouselImages, imagesWidth]);
+    }
 
     return (
-        carouselImages.map((image, index) => (
-            <img key={index} src={image} alt="carousel" />
-        ))
+        <div onWheel={handleScroll} className={carouselList}>
+            {carouselImages.map((image, index) => (
+                <img key={index} src={image} alt="carousel" />
+            ))}
+        </div>
     )
 }
