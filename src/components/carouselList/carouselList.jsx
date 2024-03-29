@@ -15,11 +15,18 @@ export const CarouselList = ({ images }) => {
             if (window.scrollX >= totalWidth - window.innerWidth) {
                 setCarouselImages([...carouselImages, images[counter % images.length]])
                 setCounter(prev => prev + 1);
+            } else if (window.scrollX === 0) {
+                setCarouselImages([...images, ...carouselImages]);
+                window.scrollTo(totalWidth, 0);
             }
+            
             if (counter / images.length > Math.ceil(images.length / 2)) {
                 setCounter(0);
                 setCarouselImages([...images]);
             }
+
+        }).catch((error) => {
+            console.error(error);
         });
     }
 

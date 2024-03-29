@@ -15,13 +15,15 @@ export const InfiniteImageCarousel = ({ images = [] }) => {
                         totalWidth *= 2;
                     }
                 }
+            }).catch((error) => {
+                console.error(error);
             });
     }, [images]);
 
 
     return (
         <div className={container}>
-            <CarouselList images={carouselImages}/>
+            <CarouselList images={carouselImages} />
         </div>
     )
 
